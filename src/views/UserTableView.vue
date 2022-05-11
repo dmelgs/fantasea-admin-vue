@@ -111,11 +111,11 @@
             <tbody>
                 <tr v-for="admin, index in adminList" :key="admin.key">
                 <td>{{index+1}}</td>
-                <td>{{boatOwner.name}}</td>
-                <td>{{boatOwner.contact_number}}</td>         
-                <td>{{boatOwner.email}}</td>
-                <td>{{boatOwner.address}}</td>
-                <td>{{boatOwner.status}}</td>
+                <td>{{admin.name}}</td>
+                <td>{{admin.contact_number}}</td>         
+                <td>{{admin.email}}</td>
+                <td>{{admin.address}}</td>
+                <td>{{admin.status}}</td>
                 <td>
                     <button class="btn message" @click.prevent="createBoatOwner(boatOwner.name)">Message</button>                 
                 </td>
@@ -135,7 +135,7 @@
 <script>
 /* eslint-disable */ 
 import { getDatabase, ref, get, child, update, onValue, remove} from "firebase/database";
-import {getAuth, createUser } from 'firebase-admin/auth';
+
 
 export default {
     name: 'userTable',
@@ -197,11 +197,9 @@ export default {
                 Object.keys(data).forEach((key) => {                        
                 boatOwnerList.push({
                     id : key,
-                    name: data[key].last_name + ',' +data[key].first_name ,               
+                    name: data[key].name ,               
                     contact_number : data[key].contact_number,
-                    email : data[key].email,
-                    address : data[key].street + ', ' +data[key].city + ', ' +data[key].province + ', ' +data[key].zip,
-                    status: data[key].status,
+                    email : data[key].email,                             
                });             
             });
         viewPumpOwner.boatOwnerList = boatOwnerList;
@@ -215,10 +213,11 @@ export default {
                 Object.keys(data).forEach((key) => {                        
                 adminList.push({
                     id : key,
-                    name: data[key].name,               
+                    name: data[key].last_name + ',' +data[key].first_name ,               
                     contact_number : data[key].contact_number,
                     email : data[key].email,
-                    address : data[key].address,
+                    address : data[key].street + ', ' +data[key].city + ', ' +data[key].province + ', ' +data[key].zip,
+                    status: data[key].status,
                });             
             });
         viewAdmin.adminList = adminList;
@@ -226,9 +225,7 @@ export default {
     },
     methods : {
         createBoatOwner(){
-            getAuth().createUser({
-
-            })
+          
         }
     }
 }
