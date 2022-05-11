@@ -22,7 +22,7 @@
                 <td>{{user.email}}</td>
                 <td>{{user.address}}</td>
                 <td>
-                    <button class="btn message" @click.prevent="messageCustomer(user.username)">Message</button>                 
+                    <button class="btn message" @click.prevent="messageUser(user.username)">Message</button>                 
                 </td>
                 <td>
                      <button class="btn delete"  @click.prevent="deleteCustomer(user.username)">Delete</button>
@@ -53,7 +53,7 @@
                 <td>{{agency.email}}</td>
                 <td>{{agency.address}}</td>
                 <td>
-                    <button class="btn message" @click.prevent="messageAgency(agency.name)">Message</button>                 
+                    <button class="btn message" @click.prevent="messageUser(agency.name)">Message</button>                 
                 </td>
                 <td>
                      <button class="btn delete" @click.prevent="deleteAgency(agency.name)">Delete</button>
@@ -84,7 +84,7 @@
                 <td>{{boatOwner.email}}</td>
                 <td>{{boatOwner.address}}</td>
                 <td>
-                    <button class="btn message" @click.prevent="createBoatOwner(boatOwner.name)">Message</button>                 
+                    <button class="btn message" @click.prevent="messageUser(boatOwner.name)">Message</button>                 
                 </td>
                 <td>
                      <button class="btn delete" @click.prevent="deleteBoatOwner(boatOwner.name)">Delete</button>
@@ -117,7 +117,7 @@
                 <td>{{admin.address}}</td>
                 <td>{{admin.status}}</td>
                 <td>
-                    <button class="btn message" @click.prevent="createBoatOwner(boatOwner.name)">Message</button>                 
+                    <button class="btn message" @click.prevent="messageUser(boatOwner.name)">Message</button>                 
                 </td>
                 <td>
                      <button class="btn delete" @click.prevent="deleteBoatOwner(boatOwner.name)">Delete</button>
@@ -127,7 +127,7 @@
           </table>
         </div>  
     </div> <!--row-->
-
+   
 </div>
     
 </template>
@@ -139,12 +139,16 @@ import { getDatabase, ref, get, child, update, onValue, remove} from "firebase/d
 
 export default {
     name: 'userTable',
+    components:{
+    
+    },
     data(){
         return{
             usersList : [],
             agencyList : [],
             boatOwnerList : [],
             adminList : [],
+            isMessage: [],
         };
     },
     mounted(){
@@ -226,6 +230,10 @@ export default {
     methods : {
         createBoatOwner(){
           
+        },
+        async messageUser(id){
+            this.isMessage = true
+            this.$router.push({ name: 'chat-box', params: { id: id } })
         }
     }
 }
@@ -254,5 +262,12 @@ h3{
 .btn:hover{
     background-color: rgb(130, 130, 128);
     color:white;
+}
+.chatbox{
+    position: fixed;
+    bottom: 0;
+    left: 40%;
+    top: 45%;
+
 }
 </style>

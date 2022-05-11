@@ -4,6 +4,7 @@
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Fantasea Admin</a>    
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
+          
           <a class="nav-link" href="#">{{email}}</a>
         </li>
       </ul>
@@ -25,17 +26,18 @@
                 </a>
               </li>
               <li class="nav-item">
+                
                 <a class="nav-link" href="#">                
                   Destinations
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">              
+                <a class="nav-link" href="#" @click="openInboxTab">              
                   Inbox
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">              
+                <a class="nav-link" href="#" @click="openReportTab">              
                   Reports
                 </a>
               </li>
@@ -72,6 +74,7 @@
     </div> 
 
   </div>
+
   <router-view/>
 </template>
 
@@ -123,6 +126,13 @@ export default {
         },
         openUserTab(){
           this.$router.push('/manage-users');
+        },
+        openReportTab(){
+          this.$router.push('/reports');
+        },
+        openInboxTab(){
+
+          this.$router.push({ name: 'inbox-admin', params: { id: this.email } })
         }
     }
 }
@@ -199,7 +209,9 @@ nav a.router-link-exact-active {
 /*
  * Navbar
  */
-
+.navbar{
+  position: fixed;
+}
 .navbar-brand {
   padding-top: .75rem;
   padding-bottom: .75rem;

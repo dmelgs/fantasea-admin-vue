@@ -3,6 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import Login from "../views/Login.vue"
 import Register from "../views/Register.vue"
 import UserTab from "../views/UserTableView.vue"
+import Reports from "../views/Reports.vue"
+import ChatBox from "../components/ChatBox.vue"
+import InboxView from "../views/InboxView.vue"
 
 const routes = [
   {
@@ -24,6 +27,21 @@ const routes = [
     path: '/manage-users',
     name: 'manage-users',
     component: UserTab
+  },
+  {
+    path: '/reports',
+    name: 'reports',
+    component: Reports
+  },
+  {
+    path: '/chat-box/:id',
+    name: 'chat-box',
+    component: ChatBox
+  },
+  {
+    path: '/inbox-admin/:id',
+    name: 'inbox-admin',
+    component: InboxView
   },
   {
     path: '/about',
