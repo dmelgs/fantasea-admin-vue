@@ -56,6 +56,11 @@
             </h6>
             <ul class="nav flex-column mb-2">  
               <li class="nav-item">
+                <a class="nav-link" href="#">             
+                  Settings
+                </a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="#" @click="singOut">
                 
                   Log out
