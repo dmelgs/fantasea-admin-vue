@@ -6,6 +6,7 @@ import UserTab from "../views/UserTableView.vue"
 import Reports from "../views/Reports.vue"
 import ChatBox from "../components/ChatBox.vue"
 import InboxView from "../views/InboxView.vue"
+import Settings from "../views/Settings.vue"
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: '/inbox-admin/:id',
     name: 'inbox-admin',
     component: InboxView
+  },
+  {
+    path: '/settings-admin',
+    name: 'settings-admin',
+    component: Settings
   },
   {
     path: '/about',

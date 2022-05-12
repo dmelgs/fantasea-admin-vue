@@ -1,11 +1,11 @@
 <template>
   <div v-if="isLoggedIn">
-  <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" >
-      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Fantasea Admin</a>    
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Fantasea Admin</a>
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          
-          <a class="nav-link" href="#">{{email}}</a>
+
+          <a class="nav-link" href="#">{{ email }}</a>
         </li>
       </ul>
     </nav>
@@ -17,32 +17,32 @@
               <li class="nav-item">
                 <a class="nav-link active" href="#">
                   <span data-feather="home"></span>
-                  Dashboard 
+                  Dashboard
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" @click="openUserTab">              
+                <a class="nav-link" href="#" @click="openUserTab">
                   Users
                 </a>
               </li>
               <li class="nav-item">
-                
-                <a class="nav-link" href="#">                
+
+                <a class="nav-link" href="#">
                   Destinations
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" @click="openInboxTab">              
+                <a class="nav-link" href="#" @click="openInboxTab">
                   Inbox
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" @click="openReportTab">              
+                <a class="nav-link" href="#" @click="openReportTab">
                   Reports
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">                
+                <a class="nav-link" href="#">
                   Request
                 </a>
               </li>
@@ -51,18 +51,20 @@
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
               <span>Others</span>
               <a class="d-flex align-items-center text-muted" href="#">
-          
+
               </a>
             </h6>
-            <ul class="nav flex-column mb-2">  
+            <ul class="nav flex-column mb-2">
               <li class="nav-item">
-                <a class="nav-link" href="#">             
-                  Settings
-                </a>
+                <router-link to="/settings-admin">
+                  <a class="nav-link" href="#">
+                    Settings
+                  </a>
+                </router-link>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#" @click="singOut">
-                
+
                   Log out
                 </a>
               </li>
@@ -70,76 +72,76 @@
           </div>
         </nav> |
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-            
+
 
 
 
         </main>
-      </div>     
-    </div> 
+      </div>
+    </div>
 
   </div>
 
-  <router-view/>
+  <router-view />
 </template>
 
 <script>
-import {getAuth, onAuthStateChanged, signOut} from 'firebase/auth'
-import { getDatabase, ref,update} from "firebase/database";
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { getDatabase, ref, update } from "firebase/database";
 
 
 export default {
-    name: 'adminApp',
+  name: 'adminApp',
 
-    data(){
-        return{
-            username: '',
-            email: '', 
-            isLoggedIn: false   
-        };
-    },
-    mounted(){
-          const db = getDatabase();          
-          onAuthStateChanged( getAuth(), (user) => {
-            if (user) {    
-                console.log('Current User: ' + user.email)
-                this.email = user.email;
-                this.$router.push('/');              
-                this.isLoggedIn = true;
-                update(ref(db, '/users/admin/' + user.uid), {
-                  status: 'online',
-                 })
-            }else{
-                this.isLoggedIn = false;
-                this.$router.push('/login');
-            }
-          });
-    },
-
-    methods: {
-      singOut(){
-        const db = getDatabase();
-        const auth = getAuth();
-         update(ref(db, '/users/admin/' + auth.currentUser.uid), {
-                  status: 'offline',
+  data() {
+    return {
+      username: '',
+      email: '',
+      isLoggedIn: false
+    };
+  },
+  mounted() {
+    const db = getDatabase();
+    onAuthStateChanged(getAuth(), (user) => {
+      if (user) {
+        console.log('Current User: ' + user.email)
+        this.email = user.email;
+        this.$router.push('/');
+        this.isLoggedIn = true;
+        update(ref(db, '/users/admin/' + user.uid), {
+          status: 'online',
         })
-        signOut(auth).then(() => {       
-          // Sign-out successful.
-        }).catch((error) => {
-          // An error happened.
-        });
-        },
-        openUserTab(){
-          this.$router.push('/manage-users');
-        },
-        openReportTab(){
-          this.$router.push('/reports');
-        },
-        openInboxTab(){
+      } else {
+        this.isLoggedIn = false;
+        this.$router.push('/login');
+      }
+    });
+  },
 
-          this.$router.push({ name: 'inbox-admin', params: { id: this.email } })
-        }
+  methods: {
+    singOut() {
+      const db = getDatabase();
+      const auth = getAuth();
+      update(ref(db, '/users/admin/' + auth.currentUser.uid), {
+        status: 'offline',
+      })
+      signOut(auth).then(() => {
+        // Sign-out successful.
+      }).catch((error) => {
+        // An error happened.
+      });
+    },
+    openUserTab() {
+      this.$router.push('/manage-users');
+    },
+    openReportTab() {
+      this.$router.push('/reports');
+    },
+    openInboxTab() {
+
+      this.$router.push({ name: 'inbox-admin', params: { id: this.email } })
     }
+  }
 }
 </script>
 
@@ -164,6 +166,7 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
+
 /*
  * Sidebar
  */
@@ -173,7 +176,8 @@ nav a.router-link-exact-active {
   top: 0;
   bottom: 0;
   left: 0;
-  z-index: 100; /* Behind the navbar */
+  z-index: 100;
+  /* Behind the navbar */
   padding: 0;
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
@@ -181,11 +185,13 @@ nav a.router-link-exact-active {
 .sidebar-sticky {
   position: -webkit-sticky;
   position: sticky;
-  top: 48px; /* Height of navbar */
+  top: 48px;
+  /* Height of navbar */
   height: calc(100vh - 48px);
   padding-top: .5rem;
   overflow-x: hidden;
-  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  overflow-y: auto;
+  /* Scrollable contents if viewport is shorter than content. */
 }
 
 .sidebar .nav-link {
@@ -211,12 +217,14 @@ nav a.router-link-exact-active {
   font-size: .75rem;
   text-transform: uppercase;
 }
+
 /*
  * Navbar
  */
-.navbar{
+.navbar {
   position: fixed;
 }
+
 .navbar-brand {
   padding-top: .75rem;
   padding-bottom: .75rem;
@@ -241,5 +249,4 @@ nav a.router-link-exact-active {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
-
 </style>
