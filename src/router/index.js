@@ -7,6 +7,7 @@ import Reports from "../views/Reports.vue"
 import ChatBox from "../components/ChatBox.vue"
 import InboxView from "../views/InboxView.vue"
 import Settings from "../views/Settings.vue"
+import Destinations from "../views/DestinationView.vue"
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: '/settings-admin',
     name: 'settings-admin',
     component: Settings
+  },
+  {
+    path: '/destinations',
+    name: 'destinations',
+    component: Destinations
   },
   {
     path: '/about',

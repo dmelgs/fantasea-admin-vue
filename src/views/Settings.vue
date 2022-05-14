@@ -32,10 +32,13 @@
                 <div class="form-group">
                   <label class="form-label">Email</label>
                   <input type="text" class="form-control mb-1" v-model="email">
-                  <div class="alert alert-warning mt-3">
+                  <div class="alert alert-warning mt-3" v-if="!isVerified">
                     Your email is not confirmed. Please check your inbox.<br>
                     <a href="javascript:void(0)" @click.prevent="sendVerification">Resend
                       confirmation</a>
+                  </div>
+                  <div class="alert alert-warning mt-3" style="background-color:lightgreen" v-else>
+                      <p style="color:green">Email is Verified</p>
                   </div>
                 </div>
                 <div class="form-group">
@@ -64,7 +67,7 @@
 
 <script>
 /* eslint-disable */
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, sendEmailVerification  } from 'firebase/auth'
 import { getDatabase, ref, get, child, update, onValue } from "firebase/database";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
@@ -77,6 +80,7 @@ export default {
       address: '',
       email: '',
       number: '',
+      isVerified : false,
     };
   },
   beforeCreate() {
@@ -97,6 +101,13 @@ export default {
             this.number = snapshot.val().contact_number;
           }
         }); // end Get Child
+
+        if(user.emailVerified == true){
+            this.isVerified = true;
+        }else{
+             this.isVerified = false;
+        }
+
       }
     })
   },
@@ -176,6 +187,13 @@ export default {
         }
       );
     },//end updateMethod
+     sendVerification() {
+      const auth = getAuth();
+      sendEmailVerification(auth.currentUser)
+        .then(() => {
+          console.log('verification sent!')
+        });
+    },
   }
 }
 </script>

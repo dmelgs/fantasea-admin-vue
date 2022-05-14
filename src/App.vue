@@ -27,7 +27,7 @@
               </li>
               <li class="nav-item">
 
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="#" @click="openDestinations">
                   Destinations
                 </a>
               </li>
@@ -40,12 +40,7 @@
                 <a class="nav-link" href="#" @click="openReportTab">
                   Reports
                 </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  Request
-                </a>
-              </li>
+              </li>          
             </ul>
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -140,6 +135,9 @@ export default {
     openInboxTab() {
 
       this.$router.push({ name: 'inbox-admin', params: { id: this.email } })
+    },
+    openDestinations(){
+       this.$router.push('/destinations');
     }
   }
 }

@@ -90,6 +90,7 @@ export default {
             if(this.email == "" || this.password == "" || this.last_name == "" || this.first_name == ""
             || this.contact == "" || this.street == "" || this.city == "" || this.province == "" || this.zip == ""
             ){
+                alert('Some Fields Are Missing')
                 return;
             }   
                      

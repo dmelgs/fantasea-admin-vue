@@ -55,6 +55,10 @@ export default {
             this.$router.push('/register-admin');
         },
         async loginUser(){
+            if(this.email == null|| this.email == "" || this.password == null || this.password == ""){
+                alert('Some Fields Are Missing')
+                return;
+            }   
              signInWithEmailAndPassword(getAuth(), this.email, this.password)                
             .then(( ) => {   
                 console.log("User logged in");  

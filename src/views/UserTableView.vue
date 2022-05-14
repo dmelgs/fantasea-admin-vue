@@ -123,12 +123,10 @@
                             <td>{{ admin.address }}</td>
                             <td>{{ admin.status }}</td>
                             <td>
-                                <button class="btn message"
-                                    @click.prevent="messageUser(admin.name)">Message</button>
+                                <button class="btn message" @click.prevent="messageUser(admin.name)">Message</button>
                             </td>
                             <td>
-                                <button class="btn delete"
-                                    @click.prevent="deleteBoatOwner(admin.name)">Delete</button>
+                                <button class="btn delete" @click.prevent="deleteBoatOwner(admin.name)">Delete</button>
                             </td>
                         </tr>
                     </tbody>
@@ -245,6 +243,7 @@ export default {
             this.$router.push({ name: 'chat-box', params: { id: id } })
         },
         deleteCustomer(id) {
+            const db = getDatabase();
             if (window.confirm("Are you sure, you want to delete: " + id)) {
                 remove(ref(db, '/appusers/' + id), {
                 })
@@ -256,6 +255,7 @@ export default {
             }
         },
         deleteBoatOwner(id) {
+            const db = getDatabase();
             if (window.confirm("Are you sure, you want to delete: " + id)) {
                 remove(ref(db, '/users/pump_boat_owner/' + id), {
                 })
@@ -267,15 +267,25 @@ export default {
             }
         },
         deleteAgency(id) {
-            // if (window.confirm("Are you sure, you want to delete: " + id)) {
-            //     remove(ref(db, '/users/travel_agency/' + id), {
-            //     })
-            //         .then(() => {
-            //             alert("User has been deleted");
-            //         }).catch((error) => {
-            //             alert(error);
-            //         });
-            // }
+            const db = getDatabase();
+            const agencyRef = ref(db, '/users/travel_agency/');
+            onValue(agencyRef, (snapshot) => {
+                let data = snapshot.val();
+                Object.keys(data).forEach((key) => {
+                    if (data[key].name == id) {                    
+                        remove(ref(db, '/users/travel_agency/' + key), {
+                        })
+                            .then(() => {
+                                alert("User has been deleted");
+                            }).catch((error) => {
+                                alert(error);
+                            });
+                    }
+                });
+            });
+            if (window.confirm("Are you sure, you want to delete: " + id)) {
+
+            }
         }
     }
 }
