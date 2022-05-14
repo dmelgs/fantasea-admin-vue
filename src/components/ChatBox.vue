@@ -206,6 +206,7 @@ export default {
 .stretch-card>.card {
     width: 100%;
     min-width: 100%
+    
 }
 
 .flex {

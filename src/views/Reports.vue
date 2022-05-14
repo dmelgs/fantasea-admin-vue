@@ -22,10 +22,10 @@
                 <td>{{report.time_sent}}</td>
                 <td>{{report.date_sent}}</td>
                 <td>
-                    <button class="btn message" @click.prevent="messageCustomer(user.username)">Review</button>                 
+                    <button class="btn message" @click.prevent="respondUser(report.username)">Respond</button>                 
                 </td>
                 <td>
-                     <button class="btn delete"  @click.prevent="deleteCustomer(user.username)">Respond</button>
+                     <button class="btn delete"  @click.prevent="isFinished(report.username)">Done</button>
                 </td>
                 </tr>            
             </tbody>
