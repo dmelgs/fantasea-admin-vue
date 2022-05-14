@@ -32,7 +32,36 @@
         </div>
         <!--row-->
 
+        <div class="row">
+            <div class="table-responsive">
+                <h3>Paid Destinations</h3>
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <th>#</th>
+                        <th>Agency Name</th>
+                        <th>Destination</th>
+                        <th>Activities </th>
+                        <th>Price</th>                      
+                        <th>Actions</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="promo, index in promoList" :key="promo.key">
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ promo.destination_name }}</td>
+                            <td>{{ promo.date_purchased }}</td>
+                            <td>{{ promo.time_purchased }}</td>
+                            <td>{{ promo.amount }} $</td>
 
+                            <td>
+                                <button class="btn delete"
+                                    @click.prevent="deletePromoted(promo.destination_name)">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--row-->
     </div>
 
 </template>
@@ -47,6 +76,7 @@ export default {
     data() {
         return {
             destinationList: [],
+            promoList: [],
         };
     },
     mounted() {
@@ -71,6 +101,24 @@ export default {
             viewDestinations.destinationList = destinationList;
         });
 
+        //get all Promoted Destination
+        let viewPromo = this;
+        const promoRef = ref(db, '/promo/');
+        onValue(promoRef, (snapshot) => {
+            let data = snapshot.val();
+            let promoList = [];
+            Object.keys(data).forEach((key) => {
+                promoList.push({
+                    agency_name: data[key].agency_name,
+                    amount: data[key].amount,
+                    date_purchased: data[key].date_purchased,
+                    days: data[key].days,
+                    destination_name: data[key].destination_name,
+                    time_purchased: data[key].time_purchased,
+                })
+            })
+            viewPromo.promoList = promoList;
+        })
 
     },
     methods: {
@@ -81,6 +129,18 @@ export default {
                 })
                     .then(() => {
                         alert("Destination has been deleted");
+                    }).catch((error) => {
+                        alert(error);
+                    });
+            }
+        },
+        deletePromoted(id){
+             const db = getDatabase();
+            if (window.confirm("Are you sure, you want to delete: " + id)) {
+                remove(ref(db, '/promo/' + id), {
+                })
+                    .then(() => {
+                        alert("Pomoted destination has been deleted");
                     }).catch((error) => {
                         alert(error);
                     });
