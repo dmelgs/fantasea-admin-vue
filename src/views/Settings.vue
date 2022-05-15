@@ -107,7 +107,6 @@ export default {
         }else{
              this.isVerified = false;
         }
-
       }
     })
   },

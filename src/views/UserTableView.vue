@@ -268,23 +268,22 @@ export default {
         },
         deleteAgency(id) {
             const db = getDatabase();
-            const agencyRef = ref(db, '/users/travel_agency/');
-            onValue(agencyRef, (snapshot) => {
-                let data = snapshot.val();
-                Object.keys(data).forEach((key) => {
-                    if (data[key].name == id) {                    
-                        remove(ref(db, '/users/travel_agency/' + key), {
-                        })
-                            .then(() => {
-                                alert("User has been deleted");
-                            }).catch((error) => {
-                                alert(error);
-                            });
-                    }
-                });
-            });
             if (window.confirm("Are you sure, you want to delete: " + id)) {
-
+                const agencyRef = ref(db, '/users/travel_agency/');
+                onValue(agencyRef, (snapshot) => {
+                    let data = snapshot.val();
+                    Object.keys(data).forEach((key) => {
+                        if (data[key].name == id) {
+                            remove(ref(db, '/users/travel_agency/' + key), {
+                            })
+                                .then(() => {
+                                    alert("User has been deleted");
+                                }).catch((error) => {
+                                    alert(error);
+                                });
+                        }
+                    });
+                });
             }
         }
     }
