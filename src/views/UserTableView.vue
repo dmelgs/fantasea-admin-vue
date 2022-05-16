@@ -99,6 +99,38 @@
                 </table>
             </div>
         </div>
+
+        <!--row-->
+         <div class="row">
+            <div class="table-responsive">
+                <h3>Pending Pump Boat</h3>            
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>                    
+                        <th>Actions</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="boatOwner, index in boatOwnerList" :key="boatOwner.key">
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ boatOwner.name }}</td>
+                            <td>{{ boatOwner.contact_number }}</td>
+                            <td>{{ boatOwner.email }}</td>                       
+                            <td>
+                                <button class="btn message"
+                                    @click.prevent="approveBoat(boatOwner.name)">Approved</button>
+                            </td>
+                            <td>
+                                <button class="btn delete"
+                                    @click.prevent="deleteBoat(boatOwner.name)">Reject</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <!--row-->
 
         <div class="row">
@@ -164,7 +196,7 @@ export default {
 
         //get all customer
         let viewUsers = this;
-        const adbRef = ref(db, '/appusers/');
+        const adbRef = ref(db, '/appusers/ClientID');
         onValue(adbRef, (snapshot) => {
             let data = snapshot.val();
             let usersList = [];

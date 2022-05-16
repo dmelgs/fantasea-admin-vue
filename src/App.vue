@@ -40,7 +40,7 @@
                 <a class="nav-link" href="#" @click="openReportTab">
                   Reports
                 </a>
-              </li>          
+              </li>
             </ul>
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -81,8 +81,9 @@
 </template>
 
 <script>
+/* eslint-disable */
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
-import { getDatabase, ref, update } from "firebase/database";
+import { getDatabase, ref, update, get, child } from "firebase/database";
 
 
 export default {
@@ -92,21 +93,41 @@ export default {
     return {
       username: '',
       email: '',
-      isLoggedIn: false
+      isLoggedIn: false,
+      userID: '',
     };
   },
   mounted() {
+    const auth = getAuth();
     const db = getDatabase();
+    const dbRef = ref(getDatabase());
     onAuthStateChanged(getAuth(), (user) => {
       if (user) {
-        console.log('Current User: ' + user.email)
         this.email = user.email;
-        this.$router.push('/');
-        this.isLoggedIn = true;
-        update(ref(db, '/users/admin/' + user.uid), {
-          status: 'online',
-        })
+        this.userID = user.uid;
+        get(child(dbRef, '/users/admin/' + this.userID)).then((snapshot) => {
+          if (snapshot.val().user_type == 'admin') {
+            console.log('Admin account ' + user.email)
+            this.$router.push('/');
+            this.isLoggedIn = true;       
+            this.$router.push('/manage-users');
+            update(ref(db, '/users/admin/' + user.uid), {
+              status: 'online',
+            })
+          }
+          else {
+            alert('Unauthorized access is forbidden');
+            this.isLoggedIn = false;
+            signOut(auth).then(() => {
+
+            })
+            this.$router.push('/login');
+          }
+        });
       } else {
+        signOut(auth).then(() => {
+
+        })
         this.isLoggedIn = false;
         this.$router.push('/login');
       }
@@ -136,8 +157,8 @@ export default {
 
       this.$router.push({ name: 'inbox-admin', params: { id: this.email } })
     },
-    openDestinations(){
-       this.$router.push('/destinations');
+    openDestinations() {
+      this.$router.push('/destinations');
     }
   }
 }
