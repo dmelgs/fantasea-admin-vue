@@ -124,7 +124,7 @@
                             </td>
                             <td>
                                 <button class="btn delete"
-                                    @click.prevent="deleteBoat(boatOwner.name)">Reject</button>
+                                    @click.prevent="rejectBoat(boatOwner.name)">Reject</button>
                             </td>
                         </tr>
                     </tbody>
@@ -317,7 +317,14 @@ export default {
                     });
                 });
             }
+        },
+        approveBoat(id){
+            
+        },
+        rejectBoat(id){
+
         }
+
     }
 }
 </script>

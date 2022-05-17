@@ -46,6 +46,7 @@ export default {
     data() {
         return {
             reportList: [],
+            isResolveList : [],
         }
     },
     mounted() {
@@ -53,10 +54,12 @@ export default {
 
         //get all reports
         let viewReports = this;
+        let viewResolve = this;
         const adbRef = ref(db, '/reports/');
         onValue(adbRef, (snapshot) => {
             let data = snapshot.val();
             let reportList = [];
+            let isResolveList = [];
             Object.keys(data).forEach((key) => {
                 reportList.push({
                     id: key,
@@ -68,6 +71,7 @@ export default {
                     messageTxt: data[key].messageTxt,
                     subjectTxt: data[key].subjectTxt,
                 });
+                
             });
             viewReports.reportList = reportList;
         });
@@ -76,6 +80,9 @@ export default {
     methods: {
         respondUser(id) {
             this.$router.push({ name: 'chat-box', params: { id: id } })
+        },
+        isFinished(id){
+            
         }
     }
 }
