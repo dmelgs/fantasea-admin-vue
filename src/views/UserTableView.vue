@@ -25,6 +25,9 @@
                                 <button class="btn message" @click.prevent="messageUser(user.username)">Message</button>
                             </td>
                             <td>
+                                <button class="btn message" @click.prevent="editCustomer(user.username)">Edit</button>
+                            </td>
+                            <td>
                                 <button class="btn delete"
                                     @click.prevent="deleteCustomer(user.username)">Delete</button>
                             </td>
@@ -56,6 +59,9 @@
                             <td>{{ agency.address }}</td>
                             <td>
                                 <button class="btn message" @click.prevent="messageUser(agency.name)">Message</button>
+                            </td>
+                            <td>
+                                <button class="btn message" @click.prevent="editAgency(agency.name)">Message</button>
                             </td>
                             <td>
                                 <button class="btn delete" @click.prevent="deleteAgency(agency.name)">Delete</button>
@@ -101,15 +107,15 @@
         </div>
 
         <!--row-->
-         <div class="row">
+        <div class="row">
             <div class="table-responsive">
-                <h3>Pending Pump Boat</h3>            
+                <h3>Pending Pump Boat</h3>
                 <table class="table table-striped table-sm">
                     <thead>
                         <th>#</th>
                         <th>Name</th>
                         <th>Contact Number</th>
-                        <th>Email</th>                    
+                        <th>Email</th>
                         <th>Actions</th>
                     </thead>
                     <tbody>
@@ -117,14 +123,13 @@
                             <td>{{ index + 1 }}</td>
                             <td>{{ boatOwner.name }}</td>
                             <td>{{ boatOwner.contact_number }}</td>
-                            <td>{{ boatOwner.email }}</td>                       
+                            <td>{{ boatOwner.email }}</td>
                             <td>
                                 <button class="btn message"
                                     @click.prevent="approveBoat(boatOwner.name)">Approved</button>
                             </td>
                             <td>
-                                <button class="btn delete"
-                                    @click.prevent="rejectBoat(boatOwner.name)">Reject</button>
+                                <button class="btn delete" @click.prevent="rejectBoat(boatOwner.name)">Reject</button>
                             </td>
                         </tr>
                     </tbody>
@@ -166,20 +171,63 @@
             </div>
         </div>
         <!--row-->
-
     </div>
 
+    <div>
+        <vue-final-modal v-model="showModal" classes="modal-container" content-class="modal-content">
+            <button class="modal__close" @click="showModal = false">
+                <mdi-close></mdi-close>
+            </button>
+            <span class="modal__title">Hello, vue-final-modal</span>
+            <div class="modal__content">
+                <form>
+                    <div class="form-group">
+                        <h6 class="modal-h">ID</h6>
+                        <input type="text" class="form-control" v-model="userID" disabled />
+                    </div>
+                    <div class="form-group">
+                        <h6 class="modal-h">Email</h6>
+                        <input type="text" class="form-control" v-model="email" disabled />
+                    </div>
+                    <div class="form-group">
+                        <h6 class="modal-h">Username</h6>
+                        <input type="text" class="form-control" v-model="username" disabled required />
+                    </div>
+                    <div class="form-group">
+                        <h6 class="modal-h">First Name</h6>
+                        <input type="text" class="form-control" v-model="firstname" required />
+                    </div>
+                    <div class="form-group">
+                        <h6 class="modal-h">Last Name</h6>
+                        <input type="text" class="form-control" v-model="lastname" required />
+                    </div>
+                    <div class="form-group">
+                        <h6 class="modal-h">Phone Number</h6>
+                        <input type="text" class="form-control" v-model="phonenumber" required />
+                    </div>
+                    <div class="form-group">
+                        <h6 class="modal-h">Address</h6>
+                        <input type="text" class="form-control" v-model="address" required />
+                    </div>
+                </form>
+                <button class="btn btn-primary" @click="updateCustomer(userID)">Update</button>
+                <button class="btn btn-danger" @click="showModal = false">Cancel</button>
+            </div>
+        </vue-final-modal>
+    </div>
+    <!--modal-->
 </template>
 
 <script>
 /* eslint-disable */
 import { getDatabase, ref, get, child, update, onValue, remove } from "firebase/database";
-
+import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal';
 
 export default {
     name: 'userTable',
     components: {
-
+        VueFinalModal,
+        ModalsContainer
     },
     data() {
         return {
@@ -188,6 +236,14 @@ export default {
             boatOwnerList: [],
             adminList: [],
             isMessage: [],
+            showModal: false,
+            userID: '',
+            email: '',
+            username: '',
+            firstname: '',
+            lastname: '',
+            phonenumber: '',
+            address: '',
         };
     },
     mounted() {
@@ -277,7 +333,7 @@ export default {
         deleteCustomer(id) {
             const db = getDatabase();
             if (window.confirm("Are you sure, you want to delete: " + id)) {
-                remove(ref(db, '/appusers/' + id), {
+                remove(ref(db, '/appusers/ClientID' + '/' + id), {
                 })
                     .then(() => {
                         alert("User has been deleted");
@@ -318,11 +374,69 @@ export default {
                 });
             }
         },
-        approveBoat(id){
-            
-        },
-        rejectBoat(id){
+        approveBoat(id) {
 
+        },
+        rejectBoat(id) {
+
+        },
+        editCustomer(id) {
+            const db = getDatabase();
+            this.showModal = true;
+            const adbRef = ref(db, '/appusers/ClientID');
+            onValue(adbRef, (snapshot) => {
+                let data = snapshot.val();
+                Object.keys(data).forEach((key) => {
+                    if (data[key].username == id) {
+                        this.userID = key
+                        this.email = data[key].email
+                        this.username = data[key].username
+                        this.lastname = data[key].lastname
+                        this.firstname = data[key].firstname
+                        this.phonenumber = data[key].phonenumber
+                        this.address = data[key].address
+                    }
+                })
+            })
+
+        },
+        updateCustomer(id) {
+            const db = getDatabase();
+            if (this.username == "" || this.lastname == "" || this.firstname == "" || this.phonenumber == ""
+                || this.address == "" || this.email == "" || this.username == "") {
+                alert('Some fields are missing')
+                return;
+            }
+            update(ref(db, '/appusers/ClientID' + '/' + id), {
+                lastname: this.lastname,
+                firstname: this.firstname,
+                phonenumber: this.phonenumber,
+                address: this.address,
+            }).then(() => {
+                console.log("update success: " + id)
+            })
+                .catch((error) => {
+                    console.log("update failed: " + id)
+                });
+        },
+        editAgency(id) {
+            this.showModal = true;
+            const db = getDatabase();
+            const agencyRef = ref(db, '/users/travel_agency/');
+            onValue(agencyRef, (snapshot) => {
+                let data = snapshot.val();
+                Object.keys(data).forEach((key) => {
+                    if (data[key].name == id) {
+                        this.userID = key
+                        this.email = data[key].email
+                        this.username = data[key].name
+                        this.lastname = "N/A"
+                        this.firstname = "N/A"
+                        this.phonenumber = data[key].contact_number
+                        this.address = data[key].address
+                    }
+                })
+            })
         }
 
     }
@@ -362,5 +476,46 @@ h3 {
     left: 40%;
     top: 45%;
 
+}
+
+::v-deep .modal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+::v-deep .modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0 1rem;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    background: #fff;
+    width: 500px;
+    overflow: scroll;
+    height: 500px;
+}
+
+.modal__title {
+    margin: 0 2rem 0 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.modal__close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 3%;
+    margin-top: 1%;
+}
+
+.modal-h {
+    text-align: left;
 }
 </style>
