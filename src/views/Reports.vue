@@ -5,30 +5,34 @@
                 <h3>Reports</h3>
                 <table class="table table-striped table-sm">
                     <thead>
-                        <th>#</th>
+                        <th>Reference #</th>
                         <th>Username</th>
                         <th>Subject</th>
                         <th>Content</th>
                         <th>Time-Sent</th>
                         <th>Date-Sent</th>
+                        <th>Status</th>
                         <th>Actions</th>
+
                     </thead>
                     <tbody>
-                        <tr v-for="report, index in reportList" :key="report.key">
-                            <td>{{ index + 1 }}</td>
+                        <tr v-for="report in reportList" :key="report.key">
+                            <td>{{ report.id }}</td>
                             <td>{{ report.username }}</td>
-                            <td v-if="report.subject !=null">{{ report.subject }}</td>
+                            <td v-if="report.subject != null">{{ report.subject }}</td>
                             <td v-else>{{ report.subjectTxt }}</td>
                             <td v-if="report.content != null">{{ report.content }}</td>
                             <td v-else>{{ report.messageTxt }}</td>
                             <td>{{ report.time_sent }}</td>
                             <td>{{ report.date_sent }}</td>
+                            <td v-if="report.status == 'done'">{{report.status}}</td>
+                            <td v-else>ongoing</td>
                             <td>
                                 <button class="btn message"
                                     @click.prevent="respondUser(report.username)">Respond</button>
                             </td>
                             <td>
-                                <button class="btn delete" @click.prevent="isFinished(report.username)">Done</button>
+                                <button class="btn delete" @click.prevent="isFinished(report.id)">Done</button>
                             </td>
                         </tr>
                     </tbody>
@@ -46,7 +50,7 @@ export default {
     data() {
         return {
             reportList: [],
-            isResolveList : [],
+            isResolveList: [],
         }
     },
     mounted() {
@@ -58,8 +62,7 @@ export default {
         const adbRef = ref(db, '/reports/');
         onValue(adbRef, (snapshot) => {
             let data = snapshot.val();
-            let reportList = [];
-            let isResolveList = [];
+            let reportList = [];   
             Object.keys(data).forEach((key) => {
                 reportList.push({
                     id: key,
@@ -70,8 +73,9 @@ export default {
                     username: data[key].username,
                     messageTxt: data[key].messageTxt,
                     subjectTxt: data[key].subjectTxt,
+                    status : data[key].status,
                 });
-                
+
             });
             viewReports.reportList = reportList;
         });
@@ -81,8 +85,16 @@ export default {
         respondUser(id) {
             this.$router.push({ name: 'chat-box', params: { id: id } })
         },
-        isFinished(id){
-            
+        isFinished(id) {
+            const db = getDatabase();
+            update(ref(db, '/reports/' + '/' + id), {
+                status: 'done'
+            }).then(() => {
+                console.log("update success: " + id)
+            })
+                .catch((error) => {
+                    console.log("update failed: " + id)
+                });
         }
     }
 }
