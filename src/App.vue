@@ -1,6 +1,6 @@
 <template>
   <div v-if="isLoggedIn">
-    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <nav class="navbar sticky-top flex-md-nowrap p-0" id="navbar-navigation">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Fantasea Admin</a>
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
@@ -44,7 +44,7 @@
             </ul>
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-              <span>Others</span>
+              <span>Otherssss</span>
               <a class="d-flex align-items-center text-muted" href="#">
 
               </a>
@@ -240,8 +240,9 @@ nav a.router-link-exact-active {
 /*
  * Navbar
  */
-.navbar {
-  position: fixed;
+.navbar-dark{
+  width: 100%;
+  color:red;
 }
 
 .navbar-brand {
@@ -267,5 +268,8 @@ nav a.router-link-exact-active {
 .form-control-dark:focus {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+}
+#navbar-navigation{
+  width: 100%;
 }
 </style>
