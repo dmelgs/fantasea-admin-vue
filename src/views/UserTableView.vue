@@ -122,20 +122,31 @@
                         <th>Name</th>
                         <th>Contact Number</th>
                         <th>Email</th>
+                        <th>Agency name</th>
+                        <th>Username</th>
+                        <th>Address</th>
+                        <th>Seating Capacity</th>
+                        <th>Password</th>
                         <th>Actions</th>
                     </thead>
                     <tbody>
-                        <tr v-for="boatOwner, index in boatOwnerList" :key="boatOwner.key">
-                            <td>{{ index + 1 }}</td>
-                            <td>{{ boatOwner.name }}</td>
+                        <tr v-for="boatOwner in pendingBoatList" :key="boatOwner.key">
+                            <td>{{ boatOwner.id }}</td>
+                            <td>{{ boatOwner.lastname }}, {{ boatOwner.firstname }}</td>
                             <td>{{ boatOwner.contact_number }}</td>
                             <td>{{ boatOwner.email }}</td>
+                            <td>{{ boatOwner.agency_name }}</td>
+                            <td>{{ boatOwner.username }}</td>
+                            <td>{{ boatOwner.address }}</td>
+                            <td>{{ boatOwner.seatingcapacity }}</td>
+                            <td>{{ boatOwner.password }}</td>
                             <td>
-                                <button class="btn message"
-                                    @click.prevent="approveBoat(boatOwner.name)">Approved</button>
+                                <button class="btn message" @click.prevent="approveBoat(boatOwner.id, boatOwner.lastname, boatOwner.firstname,
+                                boatOwner.contact_number, boatOwner.agency_name, boatOwner.email, boatOwner.username,
+                                boatOwner.address, boatOwner.seatingcapacity, boatOwner.password)">Approve</button>
                             </td>
                             <td>
-                                <button class="btn delete" @click.prevent="rejectBoat(boatOwner.name)">Reject</button>
+                                <button class="btn delete" @click.prevent="rejectBoat(boatOwner.id)">Reject</button>
                             </td>
                         </tr>
                     </tbody>
@@ -233,7 +244,7 @@
 
 <script>
 /* eslint-disable */
-import { getDatabase, ref, get, child, update, onValue, remove } from "firebase/database";
+import { getDatabase, ref, get, child, update, onValue, remove, set } from "firebase/database";
 import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal';
 
 export default {
@@ -260,6 +271,7 @@ export default {
             isAgency: false,
             isCustomer: false,
             isBoat: false,
+            pendingBoatList: [],
 
         };
     },
@@ -324,6 +336,30 @@ export default {
             });
             viewPumpOwner.boatOwnerList = boatOwnerList;
         });
+
+        //get all pending boat
+        let viewPendingBoat = this;
+        const pendingBoatREf = ref(db, '/Pending/BoatID/');
+        onValue(pendingBoatREf, (snapshot) => {
+            let data = snapshot.val();
+            let pendingBoatList = [];
+            Object.keys(data).forEach((key) => {
+                pendingBoatList.push({
+                    id: key,
+                    username: data[key].username,
+                    agency_name: data[key].agencyname,
+                    firstname: data[key].firstname,
+                    lastname: data[key].lastname,
+                    contact_number: data[key].phonenumber,
+                    password: data[key].password,
+                    email: data[key].email,
+                    address: data[key].address,
+                    seatingcapacity: data[key].seatingcapacity
+                });
+            });
+            viewPendingBoat.pendingBoatList = pendingBoatList;
+        });
+
         // get all admin
         let viewAdmin = this;
         const adminRef = ref(db, '/users/admin/');
@@ -395,11 +431,41 @@ export default {
                 });
             }
         },
-        approveBoat(id) {
-
+        approveBoat(id, lastname, firstname,
+            contact_number, agency_name, email, username,
+            address, seatingcapacity, password) {
+            const db = getDatabase();
+            if (window.confirm("Approve pump boat? " + username)) {
+                set(ref(db, 'appusers/BoatID' + '/' + id), {
+                    address: address,
+                    agencyname: agency_name,
+                    email: email,
+                    firstname: firstname,
+                    lastname: lastname,
+                    password: password,
+                    phonenumber: contact_number,
+                    seatingcapacity: seatingcapacity,
+                    username: username
+                });
+                remove(ref(db, '/pending/BoatID/' + '/' + id), {
+                }).then(() => {
+                    alert("Pump boat succesfully approved");
+                }).catch((error) => {
+                    alert(error);
+                });
+            } 
         },
         rejectBoat(id) {
-
+            const db = getDatabase();
+            if (window.confirm("Reject pump boat? " + id)) {
+                remove(ref(db, '/Pending/BoatID/' + '/' + id), {
+                })
+                    .then(() => {
+                        alert("Pending pump boat has been removed");
+                    }).catch((error) => {
+                        alert(error);
+                    });
+            }
         },
         editCustomer(id) {
             this.isBoat = false;
@@ -503,7 +569,7 @@ export default {
         },
         updateBoat(id) {
             const db = getDatabase();
-            if (this.username == "" || this.phonenumber == "" || this.lastname == "" || this.firstname == "" 
+            if (this.username == "" || this.phonenumber == "" || this.lastname == "" || this.firstname == ""
                 || this.address == "" || this.email == "" || this.username == "") {
                 alert('Some fields are missing')
                 return;
@@ -511,9 +577,9 @@ export default {
             update(ref(db, '/appusers/BoatID/' + '/' + id), {
                 contact_number: this.phonenumber,
                 address: this.address,
-                seatingcapacity : this.seatingcapacity,
-                firstname : this.firstname,
-                lastname : this.lastname,
+                seatingcapacity: this.seatingcapacity,
+                firstname: this.firstname,
+                lastname: this.lastname,
             }).then(() => {
                 console.log("update success: " + id)
             }).catch((error) => {
