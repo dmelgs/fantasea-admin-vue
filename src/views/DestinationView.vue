@@ -39,19 +39,20 @@
                     <thead>
                         <th>#</th>
                         <th>Agency Name</th>
-                        <th>Destination</th>
-                        <th>Activities </th>
+                        <th>Destination Name</th>
+                        <th>Date Purchased</th>
+                        <th>Days</th>
                         <th>Price</th>
                         <th>Actions</th>
                     </thead>
                     <tbody>
                         <tr v-for="promo, index in promoList" :key="promo.key">
                             <td>{{ index + 1 }}</td>
+                            <td>{{ promo.agency_name }}</td>
                             <td>{{ promo.destination_name }}</td>
                             <td>{{ promo.date_purchased }}</td>
-                            <td>{{ promo.time_purchased }}</td>
+                            <td>{{ promo.days }}</td>
                             <td>{{ promo.amount }} $</td>
-
                             <td>
                                 <button class="btn delete"
                                     @click.prevent="deletePromoted(promo.destination_name)">Delete</button>
@@ -82,8 +83,8 @@
                     <th>ticketStatus</th>
                 </thead>
                 <tbody>
-                    <tr v-for="booking, index in bookingList" :key="booking.key">
-                        <td>{{ index + 1 }}</td>
+                    <tr v-for="booking in bookingList" :key="booking.key">
+                        <td>{{ booking.id }}</td>
                         <td>{{ booking.destination_name }}</td>
                         <td>{{ booking.destination_province }}</td>
                         <td>{{ booking.scheduled_date }}</td>
@@ -104,6 +105,9 @@
                                         booking.ticketStatus
                                 }}
                             </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" @click="removeBooking(booking.id)">Remove</button>
                         </td>
                     </tr>
                 </tbody>
@@ -170,34 +174,28 @@ export default {
         })
         //get all bookings
         let viewBooking = this;
-        const bookingRef = ref(db, '/booking/');
+        const bookingRef = ref(db, '/boatbooking/');
         onValue(bookingRef, (snapshot) => {
             let data = snapshot.val();
+            let bookingList = [];
             Object.keys(data).forEach((key) => {
                 console.log(key)
-                const bookingRef2 = ref(db, '/booking/' + key);
-                onValue(bookingRef2, (snapshot) => {
-                    let data = snapshot.val();
-                    let bookingList = [];
-                    Object.keys(data).forEach((key) => {
-
-                        bookingList.push({
-                            customer_name: data[key].username,
-                            boat_name: data[key].boat_name,
-                            scheduled_date: data[key].date_sched,
-                            transaction_date: data[key].date_sent,
-                            price: data[key].base_price,
-                            destination_name: data[key].destination_name,
-                            destination_province: data[key].destination_province,
-                            destination_activities: data[key].activities,
-                            boat_capacity: data[key].capacity,
-                            payID: data[key].payID,
-                            ticketStatus: data[key].ticketStatus,
-                        });
-
-                    });
-                    viewBooking.bookingList = bookingList;
+                let data = snapshot.val();
+                bookingList.push({
+                    id: key,
+                    customer_name: data[key].customer_name,
+                    boat_name: data[key].pump_boat_name,
+                    scheduled_date: data[key].date_scheduled,
+                    transaction_date: data[key].date_booked,
+                    price: data[key].price,
+                    destination_name: data[key].destination_name,
+                    destination_province: data[key].destination_province,
+                    destination_activities: data[key].activities,
+                    boat_capacity: data[key].seating_capacity,
+                    payID: data[key].payID,
+                    ticketStatus: data[key].ticketStatus,
                 });
+                viewBooking.bookingList = bookingList;
             })
         })
     },
@@ -221,6 +219,18 @@ export default {
                 })
                     .then(() => {
                         alert("Pomoted destination has been deleted");
+                    }).catch((error) => {
+                        alert(error);
+                    });
+            }
+        },
+        removeBooking(id) {
+            const db = getDatabase();
+            if (window.confirm("Are you sure, you want to delete booking: " + id)) {
+                remove(ref(db, '/boatbooking/' + id), {
+                })
+                    .then(() => {
+                        alert("Booking has been deleted");
                     }).catch((error) => {
                         alert(error);
                     });

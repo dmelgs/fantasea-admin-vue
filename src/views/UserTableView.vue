@@ -502,10 +502,10 @@ export default {
                 phonenumber: this.phonenumber,
                 address: this.address,
             }).then(() => {
-                console.log("update success: " + id)
+                alert("update success: " + id)
             })
                 .catch((error) => {
-                    console.log("update failed: " + id)
+                    alert("update failed: " + id)
                 });
         },
         editAgency(id) {
@@ -540,9 +540,9 @@ export default {
                 contact_number: this.phonenumber,
                 address: this.address,
             }).then(() => {
-                console.log("update success: " + id)
+                alert("update success: " + id)
             }).catch((error) => {
-                console.log("update failed: " + id)
+                alert("update failed: " + id)
             });
         },
         editBoat(id) {
@@ -581,9 +581,9 @@ export default {
                 firstname: this.firstname,
                 lastname: this.lastname,
             }).then(() => {
-                console.log("update success: " + id)
+                alert("update success: " + id)
             }).catch((error) => {
-                console.log("update failed: " + id)
+                alert("update failed: " + id)
             });
         }
     }
