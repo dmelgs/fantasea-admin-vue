@@ -390,7 +390,7 @@ export default {
         deleteCustomer(id) {
             const db = getDatabase();
             if (window.confirm("Are you sure, you want to delete: " + id)) {
-                remove(ref(db, '/appusers/ClientID' + '/' + id), {
+                remove(ref(db, '/appusers/ClientID' + id), {
                 })
                     .then(() => {
                         alert("User has been deleted");
@@ -402,7 +402,7 @@ export default {
         deleteBoatOwner(id) {
             const db = getDatabase();
             if (window.confirm("Are you sure, you want to delete: " + id)) {
-                remove(ref(db, '/appuser/BoatID/' + '/' + id), {
+                remove(ref(db, '/appusers/BoatID/' + id), {
                 })
                     .then(() => {
                         alert("User has been deleted");
