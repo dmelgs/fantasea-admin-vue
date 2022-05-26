@@ -447,7 +447,7 @@ export default {
                     seatingcapacity: seatingcapacity,
                     username: username
                 });
-                remove(ref(db, '/pending/BoatID/' + '/' + id), {
+                remove(ref(db, '/Pending/BoatID/'+ id), {
                 }).then(() => {
                     alert("Pump boat succesfully approved");
                 }).catch((error) => {
@@ -458,7 +458,7 @@ export default {
         rejectBoat(id) {
             const db = getDatabase();
             if (window.confirm("Reject pump boat? " + id)) {
-                remove(ref(db, '/Pending/BoatID/' + '/' + id), {
+                remove(ref(db, '/Pending/BoatID/' + id), {
                 })
                     .then(() => {
                         alert("Pending pump boat has been removed");
